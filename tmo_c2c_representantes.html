@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TMO en C2C — Tu guía práctica</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0D0D0D;
+  --ink2:#3A3A3A;
+  --ink3:#717171;
+  --bg:#F7F6F2;
+  --white:#FFFFFF;
+  --yellow:#FFD84D;
+  --yellow-dark:#B89000;
+  --red:#FF4343;
+  --red-bg:#FFF0F0;
+  --red-border:#FFBDBD;
+  --green:#1AAF6B;
+  --green-bg:#EDFAF3;
+  --blue:#1E6FD9;
+  --blue-bg:#EBF3FF;
+  --orange:#F07820;
+  --orange-bg:#FFF3EA;
+  --purple:#6B4EFF;
+  --purple-bg:#F0EDFF;
+  --border:#E4E2DA;
+}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  padding:28px 16px 64px;
+  line-height:1.6;
+}
+.wrap{max-width:860px;margin:0 auto;}
+
+/* FADE-IN */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.fade{opacity:0;animation:fadeUp .55s ease forwards;}
+.fade:nth-child(1){animation-delay:.05s}
+.fade:nth-child(2){animation-delay:.15s}
+.fade:nth-child(3){animation-delay:.22s}
+.fade:nth-child(4){animation-delay:.29s}
+.fade:nth-child(5){animation-delay:.36s}
+.fade:nth-child(6){animation-delay:.43s}
+.fade:nth-child(7){animation-delay:.50s}
+.fade:nth-child(8){animation-delay:.57s}
+.fade:nth-child(9){animation-delay:.64s}
+
+/* HERO */
+.hero{
+  background:var(--ink);
+  border-radius:22px;
+  padding:3rem 2.5rem 2.5rem;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::after{
+  content:"C2C";
+  position:absolute;
+  right:-18px;top:-30px;
+  font-family:'Sora',sans-serif;
+  font-size:160px;font-weight:800;
+  color:rgba(255,255,255,0.04);
+  line-height:1;pointer-events:none;
+  letter-spacing:-6px;
+}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--yellow);
+  color:var(--ink);
+  font-family:'Sora',sans-serif;
+  font-size:11px;font-weight:700;
+  padding:5px 14px;border-radius:30px;
+  margin-bottom:1.5rem;
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.hero h1{
+  font-family:'Sora',sans-serif;
+  font-size:38px;font-weight:800;
+  color:var(--white);
+  line-height:1.15;
+  margin-bottom:1rem;
+  max-width:560px;
+}
+.hero h1 span{color:var(--yellow);}
+.hero p{
+  font-size:15px;color:rgba(255,255,255,0.72);
+  line-height:1.7;max-width:580px;
+  margin-bottom:2rem;
+}
+.formula-strip{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:14px;
+  padding:14px 20px;
+}
+.f-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.1em;margin-right:4px;}
+.f-pill{
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.18);
+  color:var(--white);font-size:13px;font-weight:600;
+  padding:6px 14px;border-radius:8px;
+}
+.f-pill.total{background:var(--yellow);color:var(--ink);border-color:var(--yellow);}
+.f-plus{color:rgba(255,255,255,0.35);font-size:16px;}
+
+/* ALERTA 30 MIN */
+.alert-card{
+  background:var(--white);
+  border:2px solid var(--red);
+  border-radius:20px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.alert-head{
+  background:var(--red);
+  padding:14px 22px;
+  display:flex;align-items:center;gap:12px;
+}
+.alert-head h2{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:white;}
+.alert-head .pulse{
+  width:10px;height:10px;border-radius:50%;
+  background:white;flex-shrink:0;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.alert-head .badge{
+  margin-left:auto;
+  background:rgba(255,255,255,0.2);
+  color:white;font-size:11px;font-weight:700;
+  padding:3px 12px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;
+}
+.alert-body{padding:1.5rem 1.75rem;}
+.alert-trigger-row{
+  display:flex;align-items:center;gap:16px;
+  background:var(--red-bg);
+  border:1px solid var(--red-border);
+  border-radius:14px;
+  padding:16px 20px;
+  margin-bottom:16px;
+}
+.alert-clock{
+  font-family:'Sora',sans-serif;
+  font-size:36px;font-weight:800;color:var(--red);
+  white-space:nowrap;flex-shrink:0;
+}
+.alert-trigger-row p{font-size:14px;color:#8B1A1A;line-height:1.6;}
+.alert-trigger-row p strong{color:var(--red);font-weight:700;}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.rule-card{border-radius:14px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;}
+.rule-card.no{background:var(--red-bg);border:1px solid var(--red-border);}
+.rule-card.yes{background:var(--green-bg);border:1px solid #96E8C3;}
+.rule-icon{
+  width:34px;height:34px;border-radius:50%;
+  font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-family:'Sora',sans-serif;
+}
+.rule-card.no .rule-icon{background:var(--red);color:white;}
+.rule-card.yes .rule-icon{background:var(--green);color:white;}
+.rule-card h4{font-size:13px;font-weight:700;margin-bottom:4px;}
+.rule-card.no h4{color:#7A1010;}
+.rule-card.yes h4{color:#0A6640;}
+.rule-card p{font-size:12px;line-height:1.55;}
+.rule-card.no p{color:#A32D2D;}
+.rule-card.yes p{color:#0D5235;}
+
+/* SECCIÓN BLANCA */
+.card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:2rem;
+  margin-bottom:20px;
+}
+.sec-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Sora',sans-serif;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--ink3);
+  margin-bottom:1rem;
+}
+.sec-label .dot{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--ink);color:white;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.card h2{
+  font-family:'Sora',sans-serif;
+  font-size:22px;font-weight:800;
+  margin-bottom:1rem;line-height:1.2;
+}
+
+/* DEFINICIÓN */
+.def-box{
+  border-left:4px solid var(--yellow);
+  background:var(--bg);
+  border-radius:0 12px 12px 0;
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+}
+.def-box p{font-size:15px;color:var(--ink);line-height:1.75;}
+.def-box strong{font-weight:700;color:var(--ink);}
+
+.key-pill{
+  background:var(--ink);
+  border-radius:14px;
+  padding:1rem 1.25rem;
+  display:flex;gap:12px;align-items:flex-start;
+  margin-bottom:1.5rem;
+}
+.key-pill p{color:rgba(255,255,255,0.85);font-size:14px;line-height:1.65;}
+.key-pill strong{color:var(--yellow);}
+
+/* TMO vs TMC */
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.vs-box{border-radius:14px;padding:1.25rem;}
+.vs-box.tmo{background:var(--ink);border:2px solid var(--ink);}
+.vs-box.tmc{background:var(--bg);border:1.5px solid var(--border);}
+.vs-box .vb-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+.vs-box.tmo .vb-tag{color:var(--yellow);}
+.vs-box.tmc .vb-tag{color:var(--ink3);}
+.vs-box .vb-name{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;}
+.vs-box.tmo .vb-name{color:var(--white);}
+.vs-box.tmc .vb-name{color:var(--ink);}
+.vs-box p{font-size:13px;line-height:1.55;}
+.vs-box.tmo p{color:rgba(255,255,255,0.7);}
+.vs-box.tmc p{color:var(--ink2);}
+.vb-chip{display:inline-block;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:10px;}
+.vs-box.tmo .vb-chip{background:var(--yellow);color:var(--ink);}
+.vs-box.tmc .vb-chip{background:var(--border);color:var(--ink2);}
+
+.warn-note{
+  background:var(--orange-bg);
+  border:1px solid #F8C99A;
+  border-radius:12px;
+  padding:12px 16px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.warn-note p{font-size:13px;color:#8B4000;line-height:1.55;}
+
+/* FASES C2C */
+.phases-label{
+  font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink3);margin-bottom:10px;
+}
+.phases-rail{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);
+  margin-bottom:16px;
+}
+.phase{
+  padding:14px 10px;text-align:center;
+  position:relative;
+  transition:transform .2s;
+}
+.phase:hover{transform:translateY(-2px);z-index:2;}
+.phase:not(:last-child)::after{
+  content:"›";
+  position:absolute;right:-7px;top:50%;
+  transform:translateY(-50%);
+  font-size:14px;color:#ccc;z-index:3;
+}
+.phase .p-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.6;margin-bottom:5px;}
+.phase .p-name{font-size:12px;font-weight:700;line-height:1.25;}
+.phase .p-time{font-size:11px;opacity:.65;margin-top:3px;}
+.p1{background:#F0EDFF;} .p1 .p-num,.p1 .p-name,.p1 .p-time{color:#3D2B9E;}
+.p2{background:#EBF3FF;} .p2 .p-num,.p2 .p-name,.p2 .p-time{color:#0C447C;}
+.p3{background:#0D0D0D;} .p3 .p-num{color:rgba(255,216,77,.7);} .p3 .p-name{color:var(--yellow);} .p3 .p-time{color:rgba(255,255,255,.5);}
+.p4{background:#FFF3EA;} .p4 .p-num,.p4 .p-name,.p4 .p-time{color:#8B3D00;}
+.p5{background:#EDFAF3;} .p5 .p-num,.p5 .p-name,.p5 .p-time{color:#0A5233;}
+
+.phases-desc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1rem;}
+.pd{border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.5;}
+.pd strong{display:block;font-weight:700;margin-bottom:3px;font-size:12px;}
+.pd1{background:#F0EDFF;} .pd1 strong,.pd1{color:#3D2B9E;}
+.pd2{background:#EBF3FF;} .pd2 strong,.pd2{color:#0C447C;}
+.pd3{background:#0D0D0D;} .pd3 strong{color:var(--yellow);} .pd3{color:rgba(255,255,255,.7);}
+.pd4{background:#FFF3EA;} .pd4 strong,.pd4{color:#8B3D00;}
+.pd5{background:#EDFAF3;} .pd5 strong,.pd5{color:#0A5233;}
+
+.tmc-note{
+  background:var(--yellow);
+  border-radius:12px;padding:12px 16px;
+  display:flex;gap:10px;align-items:center;
+}
+.tmc-note p{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5;}
+.tmc-note strong{font-weight:800;}
+
+/* RANGOS */
+.rangos-section{
+  background:var(--ink);
+  border-radius:20px;
+  padding:2rem;
+  margin-bottom:20px;
+}
+.rangos-section .sec-label{color:rgba(255,255,255,0.45);}
+.rangos-section h2{color:var(--white);}
+.rangos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:1rem;}
+.rango-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:1.1rem;text-align:center;}
+.rango-card .rc-ch{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+.rango-card .rc-val{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--white);}
+.rango-card .rc-note{font-size:11px;color:rgba(255,255,255,0.45);margin-top:4px;}
+.rango-card.alert-rango{border:2px solid var(--red);background:rgba(255,67,67,0.12);position:relative;}
+.rango-card.alert-rango .rc-ch{color:var(--red);}
+.rango-card.alert-rango .rc-val{color:var(--red);}
+.rango-card.alert-rango .rc-note{color:rgba(255,100,100,0.75);}
+.rango-card.alert-rango .blip{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  background:var(--red);color:white;
+  font-size:10px;font-weight:700;
+  padding:2px 10px;border-radius:20px;white-space:nowrap;
+  text-transform:uppercase;letter-spacing:.06em;
+}
+
+/* IMPORTANCIA */
+.imp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.imp-card{border-radius:14px;padding:1.25rem;}
+.imp-card .ic-icon{font-size:24px;margin-bottom:10px;}
+.imp-card h3{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;margin-bottom:5px;}
+.imp-card p{font-size:13px;line-height:1.55;}
+.ic-yellow{background:var(--yellow);} .ic-yellow h3,.ic-yellow p{color:var(--ink);}
+.ic-dark{background:var(--ink);} .ic-dark h3{color:var(--white);} .ic-dark p{color:rgba(255,255,255,0.65);}
+.ic-blue{background:var(--blue-bg);border:1px solid #AECFF7;} .ic-blue h3,.ic-blue p{color:#0D3D80;}
+.ic-green{background:var(--green-bg);border:1px solid #96E8C3;} .ic-green h3,.ic-green p{color:#0A5233;}
+
+/* TIPS */
+.tips-list{display:flex;flex-direction:column;gap:10px;}
+.tip{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:14px 18px;
+  border-radius:14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  transition:border-color .2s,transform .2s;
+}
+.tip:hover{border-color:var(--ink);transform:translateX(3px);}
+.tip-n{
+  min-width:32px;height:32px;border-radius:50%;
+  background:var(--ink);color:var(--yellow);
+  font-family:'Sora',sans-serif;font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.tip-body h4{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px;}
+.tip-body p{font-size:13px;color:var(--ink2);line-height:1.55;}
+
+/* VS */
+.vs-rows{}
+.vs-row{display:flex;align-items:stretch;gap:8px;margin-bottom:10px;}
+.vr-bad{background:var(--red-bg);border:1px solid var(--red-border);border-radius:12px;flex:1;padding:12px 16px;}
+.vr-bad p{font-size:13px;color:#7A1010;line-height:1.5;}
+.vr-good{background:var(--green-bg);border:1px solid #96E8C3;border-radius:12px;flex:1;padding:12px 16px;}
+.vr-good p{font-size:13px;color:#0A5233;line-height:1.5;}
+.vr-arr{font-size:18px;color:#CCC;display:flex;align-items:center;flex-shrink:0;}
+
+/* CIERRE */
+.cierre{
+  background:var(--yellow);
+  border-radius:20px;
+  padding:2rem;
+  display:flex;gap:18px;align-items:flex-start;
+}
+.cierre-icon{font-size:32px;flex-shrink:0;}
+.cierre h3{font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.cierre p{font-size:14px;color:rgba(0,0,0,0.7);line-height:1.7;}
+.cierre strong{color:var(--ink);font-weight:700;}
+
+@media(max-width:600px){
+  .hero h1{font-size:26px;}
+  .phases-rail,.phases-desc{grid-template-columns:1fr;}
+  .phase:not(:last-child)::after{display:none;}
+  .versus,.rules-grid,.imp-grid,.rangos-grid{grid-template-columns:1fr;}
+  .vs-row{flex-direction:column;}
+  .vr-arr{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero fade">
+    <div class="hero-chip">🚨 Urgente</div>
+    <h1>Entiende el <span>TMO</span> en llamadas C2C</h1>
+    <p>Todo lo que necesitas saber sobre cómo se mide tu tiempo en cada llamada, desde que se asigna el caso hasta que lo cierras.</p>
+    <div class="formula-strip">
+      <span class="f-label">TMO =</span>
+      <div class="f-pill">Pre-conv.</div>
+      <span class="f-plus">+</span>
+      <div class="f-pill">Establecimiento</div>
+      <span class="f-plus">+</span>
+      <div class="f-pill">Conversación</div>
+      <span class="f-plus">+</span>
+      <div class="f-pill">Hold</div>
+      <span class="f-plus">+</span>
+      <div class="f-pill">Post-conv.</div>
+      <span class="f-plus">=</span>
+      <div class="f-pill total">TMO Total</div>
+    </div>
+  </div>
+
+  <!-- ALERTA 30 MIN -->
+  <div class="alert-card fade">
+    <div class="alert-head">
+      <div class="pulse"></div>
+      <h2>Alerta activa — Casos con más de 30 minutos</h2>
+      <span class="badge">Importante</span>
+    </div>
+    <div class="alert-body">
+      <div class="alert-trigger-row">
+        <div class="alert-clock">30'</div>
+        <p>Ahora hay <strong>alertas automáticas</strong> para todo caso que supere los 30 minutos. Esto no es normal — un caso en ese punto necesita atención inmediata. El sistema lo detecta, pero tú debes actuar antes de que llegue.</p>
+      </div>
+      <div class="rules-grid">
+        <div class="rule-card no">
+          <div class="rule-icon">1</div>
+          <div>
+            <h4>No deberíamos llegar ahí</h4>
+            <p>Un caso de 30+ minutos en C2C es una señal de bloqueo. Si el problema no tiene salida clara, eso no se resuelve prolongando la llamada.</p>
+          </div>
+        </div>
+        <div class="rule-card yes">
+          <div class="rule-icon">2</div>
+          <div>
+            <h4>Levanta la mano antes de llegar</h4>
+            <p>Si ves que el caso se está alargando, escala con tu líder de inmediato. No esperes a que el sistema dispare la alerta.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUÉ ES EL TMO -->
+  <div class="card fade">
+    <div class="sec-label"><span class="dot">1</span> Conceptos base</div>
+    <h2>¿Qué es el TMO y por qué no es lo mismo que el tiempo de llamada?</h2>
+
+    <div class="def-box">
+      <p>El TMO es el <strong>tiempo total que tú estás ocupado con un caso</strong>, contado desde que el sistema te lo asigna hasta que lo cierras por completo. En C2C eso incluye mucho más que la conversación con el cliente.</p>
+    </div>
+
+    <div class="key-pill">
+      <span style="font-size:18px;">⚡</span>
+      <p>El error más común: creer que el TMO empieza cuando el cliente contesta. <strong>No. El TMO ya está corriendo desde que el caso te llega.</strong> Todo lo que haces antes y después de hablar también cuenta.</p>
+    </div>
+
+    <div class="versus">
+      <div class="vs-box tmo">
+        <div class="vb-tag">Métrica completa</div>
+        <div class="vb-name">TMO</div>
+        <p>Todo el ciclo: preparación, establecimiento de la llamada, conversación, hold y cierre. Es lo que realmente mide tu eficiencia.</p>
+        <div class="vb-chip">Tiempo total de operación</div>
+      </div>
+      <div class="vs-box tmc">
+        <div class="vb-tag">Solo una parte</div>
+        <div class="vb-name">TMC</div>
+        <p>Únicamente el tiempo que estás hablando con el cliente. Es solo un pedazo del TMO — el más visible, pero no el único.</p>
+        <div class="vb-chip">Solo la conversación</div>
+      </div>
+    </div>
+
+    <div class="warn-note">
+      <span style="font-size:17px;">⚠️</span>
+      <p><strong>Confusión típica:</strong> hablar rápido no garantiza un buen TMO. Si el hold, la pre-conversación o el cierre están descontrolados, el TMO sube igual. Hay que cuidar todas las fases.</p>
+    </div>
+  </div>
+
+  <!-- FASES C2C -->
+  <div class="card fade">
+    <div class="sec-label"><span class="dot">2</span> Las 5 fases del TMO en C2C</div>
+    <h2>Así se divide tu tiempo en cada llamada</h2>
+
+    <div class="phases-rail">
+      <div class="phase p1">
+        <div class="p-num">Fase 1</div>
+        <div class="p-name">Pre-conversación</div>
+        <div class="p-time">Antes de llamar</div>
+      </div>
+      <div class="phase p2">
+        <div class="p-num">Fase 2</div>
+        <div class="p-name">Establecimiento</div>
+        <div class="p-time">Conexión técnica</div>
+      </div>
+      <div class="phase p3">
+        <div class="p-num">Fase 3</div>
+        <div class="p-name">Conversación activa</div>
+        <div class="p-time">= TMC</div>
+      </div>
+      <div class="phase p4">
+        <div class="p-num">Fase 4</div>
+        <div class="p-name">Hold / Espera</div>
+        <div class="p-time">Cliente en espera</div>
+      </div>
+      <div class="phase p5">
+        <div class="p-num">Fase 5</div>
+        <div class="p-name">Post-conversación</div>
+        <div class="p-time">Cierre y ACW</div>
+      </div>
+    </div>
+
+    <div class="phases-desc">
+      <div class="pd pd1"><strong>Pre-conversación</strong>Desde que el caso te llega hasta que el cliente contesta. El TMO ya está corriendo aquí.</div>
+      <div class="pd pd2"><strong>Establecimiento</strong>El tiempo técnico para conectar la llamada. Aunque es corto, suma al total.</div>
+      <div class="pd pd3"><strong>Conversación activa</strong>El tiempo real hablando con el cliente. Esto es el TMC — solo una parte del todo.</div>
+      <div class="pd pd4"><strong>Hold / Espera</strong>Cada segundo en hold cuenta. Es uno de los puntos más fáciles de mejorar.</div>
+      <div class="pd pd5"><strong>Post-conversación</strong>Documentar y cerrar el caso. Si lo dejas para después, el ACW dispara el TMO.</div>
+    </div>
+
+    <div class="tmc-note">
+      <span style="font-size:18px;">💡</span>
+      <p><strong>Para tener en cuenta:</strong> la Fase 3 (conversación) es la única que equivale al TMC. Las otras 4 fases son tiempo de operación puro que muchos reps no tienen en radar. Ahí es donde está la oportunidad de mejorar.</p>
+    </div>
+  </div>
+
+  <!-- RANGOS -->
+  <div class="rangos-section fade">
+    <div class="sec-label"><span class="dot" style="background:var(--yellow);color:var(--ink);">3</span> Rangos de referencia</div>
+    <h2 style="color:white;">¿Cuánto debería durar una llamada C2C?</h2>
+    <div class="rangos-grid">
+      <div class="rango-card">
+        <div class="rc-ch">📞 Llamada C2C ideal</div>
+        <div class="rc-val">4–8 min</div>
+        <div class="rc-note">Rango esperado por el equipo</div>
+      </div>
+      <div class="rango-card">
+        <div class="rc-ch">✅ TMC dentro de la llamada</div>
+        <div class="rc-val">3–6 min</div>
+        <div class="rc-note">Solo el tiempo de conversación</div>
+      </div>
+      <div class="rango-card alert-rango">
+        <div class="blip">🚨 Alerta activa</div>
+        <div class="rc-ch">⏱️ Límite de alerta</div>
+        <div class="rc-val">+30 min</div>
+        <div class="rc-note">Escala antes de llegar aquí</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORTANCIA -->
+  <div class="card fade">
+    <div class="sec-label"><span class="dot">4</span> Por qué importa</div>
+    <h2>Lo que tu TMO dice de ti (y del equipo)</h2>
+    <div class="imp-grid">
+      <div class="imp-card ic-yellow">
+        <div class="ic-icon">📊</div>
+        <h3>Tu productividad real</h3>
+        <p>El TMO define cuántos casos puedes atender por turno. Un TMO eficiente = más casos bien resueltos en el mismo tiempo.</p>
+      </div>
+      <div class="imp-card ic-dark">
+        <div class="ic-icon">👥</div>
+        <h3>Impacto en el equipo</h3>
+        <p>Si tu TMO sube, la cola de casos del equipo también sube. No es solo tu métrica — es compartida.</p>
+      </div>
+      <div class="imp-card ic-blue">
+        <div class="ic-icon">⭐</div>
+        <h3>Satisfacción del cliente</h3>
+        <p>Más tiempo en la llamada no significa mejor atención. Un cliente resuelto rápido y bien es un cliente satisfecho.</p>
+      </div>
+      <div class="imp-card ic-green">
+        <div class="ic-icon">🎯</div>
+        <h3>Señal de dominio</h3>
+        <p>Un buen TMO en C2C muestra que conoces el proceso, las herramientas y sabes cuándo escalar.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPS C2C -->
+  <div class="card fade">
+    <div class="sec-label"><span class="dot">5</span> Tips para C2C</div>
+    <h2>Cómo mantener un buen TMO en tus llamadas</h2>
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-n">1</div>
+        <div class="tip-body">
+          <h4>Lee el caso antes de marcar</h4>
+          <p>La fase de pre-conversación es tu ventana para prepararte. Revisa el historial, el motivo y qué solución aplica. Entras a la llamada con el diagnóstico listo.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-n">2</div>
+        <div class="tip-body">
+          <h4>Reduce el hold al mínimo</h4>
+          <p>Si necesitas buscar información, avísale al cliente y sé específico. "Dame un momento" sin contexto alarga la espera y baja la satisfacción. Prepara lo que puedas antes de la llamada.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-n">3</div>
+        <div class="tip-body">
+          <h4>Documenta mientras atiendes</h4>
+          <p>No dejes el ACW para después de colgar. Anota lo relevante mientras el cliente habla. Eso recorta minutos del post-conversación sin afectar la calidad.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-n">4</div>
+        <div class="tip-body">
+          <h4>Conoce los flujos de escalación</h4>
+          <p>Si un caso no tiene salida clara, saber exactamente a dónde escalarlo evita tiempo muerto. Búscalo antes, no durante la llamada con el cliente en línea.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-n">5</div>
+        <div class="tip-body">
+          <h4>Domina las herramientas del sistema</h4>
+          <p>Cada segundo navegando sin saber dónde ir suma al TMO. Practica los atajos y las secciones clave antes de que lleguen los casos.</p>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-n">6</div>
+        <div class="tip-body">
+          <h4>Escala a tiempo, no tarde</h4>
+          <p>Si el caso se está alargando o no tiene resolución clara, no esperes a los 30 minutos. Levanta la mano con el líder antes de que la situación se complique.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERRORES VS BUENAS PRÁCTICAS -->
+  <div class="card fade">
+    <div class="sec-label"><span class="dot">6</span> Errores vs. buenas prácticas</div>
+    <h2>Lo que sube el TMO vs. lo que lo baja</h2>
+    <div class="vs-rows">
+      <div class="vs-row">
+        <div class="vr-bad"><p>❌ Entrar a la llamada sin leer el caso</p></div>
+        <div class="vr-arr">→</div>
+        <div class="vr-good"><p>✅ Revisar el historial en la pre-conversación</p></div>
+      </div>
+      <div class="vs-row">
+        <div class="vr-bad"><p>❌ Poner en hold sin avisar al cliente</p></div>
+        <div class="vr-arr">→</div>
+        <div class="vr-good"><p>✅ Avisar antes y gestionar el hold con agilidad</p></div>
+      </div>
+      <div class="vs-row">
+        <div class="vr-bad"><p>❌ Dejar toda la documentación para después de colgar</p></div>
+        <div class="vr-arr">→</div>
+        <div class="vr-good"><p>✅ Registrar mientras el cliente habla</p></div>
+      </div>
+      <div class="vs-row">
+        <div class="vr-bad"><p>❌ Buscar el flujo de escalación durante la llamada</p></div>
+        <div class="vr-arr">→</div>
+        <div class="vr-good"><p>✅ Conocerlo de antemano para actuar rápido</p></div>
+      </div>
+      <div class="vs-row">
+        <div class="vr-bad"><p>❌ Esperar a que llegue la alerta de 30 min para actuar</p></div>
+        <div class="vr-arr">→</div>
+        <div class="vr-good"><p>✅ Escalar con el líder antes de llegar a ese punto</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CIERRE -->
+  <div class="cierre fade">
+    <div class="cierre-icon">💡</div>
+    <div>
+      <h3>Eficiencia no es velocidad — es hacer las cosas bien desde la primera vez</h3>
+      <p>Un buen TMO en C2C no significa apresurarse. Significa llegar preparado, gestionar cada fase con intención y cerrar limpio. <strong>Un caso mal resuelto vuelve y duplica tu tiempo.</strong> La mejor forma de tener un TMO bajo es resolver bien a la primera.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
