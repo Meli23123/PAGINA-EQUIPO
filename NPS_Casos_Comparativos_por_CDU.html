@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Casos Comparativos por CDU — NPS Credits 2026</title>
+<style>
+  :root {
+    --brand: #009EE3;
+    --brand-dark: #006DB3;
+    --danger: #DC2626;
+    --danger-bg: #FEF2F2;
+    --danger-border: #FECACA;
+    --warn: #D97706;
+    --warn-bg: #FFFBEB;
+    --warn-border: #FCD34D;
+    --ok: #16A34A;
+    --ok-bg: #F0FDF4;
+    --ok-border: #BBF7D0;
+    --purple: #7C3AED;
+    --purple-bg: #F5F3FF;
+    --bg: #F1F5F9;
+    --surface: #FFFFFF;
+    --text: #1E293B;
+    --muted: #64748B;
+    --border: #E2E8F0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 13.5px; line-height: 1.6; }
+
+  header {
+    background: linear-gradient(135deg, #006DB3 0%, #009EE3 55%, #00C9A7 100%);
+    color: white; padding: 30px 40px 24px;
+  }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header p { opacity: .85; font-size: 12.5px; margin-top: 5px; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 28px 20px; }
+
+  /* SECCIÓN DE CORTE */
+  .corte-header {
+    border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; margin-top: 32px;
+    font-size: 15px; font-weight: 700; color: white;
+  }
+  .corte-a { background: linear-gradient(90deg, #0369A1, #0EA5E9); }
+  .corte-b { background: linear-gradient(90deg, #6D28D9, #8B5CF6); }
+
+  /* CDU BLOCK */
+  .cdu-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  }
+  .cdu-title {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+    background: #F8FAFC;
+    border-bottom: 1px solid var(--border);
+  }
+  .cdu-name { font-size: 15px; font-weight: 700; flex: 1; }
+  .pill { border-radius: 20px; padding: 3px 10px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+  .pill-det { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+  .pill-neu { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
+  .pill-pro { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok-border); }
+  .pill-n { background: #EFF6FF; color: var(--brand-dark); border: 1px solid #BFDBFE; }
+
+  /* INSIGHT BOX */
+  .insight {
+    padding: 10px 20px;
+    background: #FFFDF0;
+    border-bottom: 1px solid var(--warn-border);
+    font-size: 12.5px; color: #78350F;
+  }
+  .insight strong { color: #92400E; }
+
+  /* COMPARISON GRID */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .col-det { border-right: 1px solid var(--border); }
+  .col-header {
+    padding: 10px 18px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .col-header.det { background: #FFF5F5; color: var(--danger); border-bottom: 2px solid var(--danger); }
+  .col-header.pro { background: #F0FDF4; color: var(--ok); border-bottom: 2px solid var(--ok); }
+  .col-header.neu-h { background: var(--warn-bg); color: var(--warn); border-bottom: 2px solid var(--warn); }
+
+  /* CASE CARD */
+  .case-card {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .case-card:last-child { border-bottom: none; }
+  .case-meta {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items: center;
+  }
+  .case-id { font-size: 11px; font-weight: 700; color: var(--muted); font-family: monospace; background: #F1F5F9; border-radius: 4px; padding: 1px 6px; }
+  .case-office { font-size: 11px; color: var(--muted); }
+  .case-sol { font-size: 11.5px; color: var(--brand-dark); font-style: italic; margin-bottom: 5px; }
+  .comment-box {
+    border-left: 3px solid;
+    padding: 6px 10px;
+    border-radius: 0 5px 5px 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .comment-box.det-c { border-color: var(--danger); background: #FFF8F8; color: #7F1D1D; }
+  .comment-box.pro-c { border-color: var(--ok); background: #F8FFF9; color: #14532D; }
+  .comment-box.neu-c { border-color: var(--warn); background: #FFFDF0; color: #713F12; }
+  .no-comment { font-size: 11.5px; color: #CBD5E1; font-style: italic; }
+
+  /* NEUTROS section */
+  .neutros-row {
+    background: var(--warn-bg);
+    border-top: 1px solid var(--warn-border);
+    padding: 10px 18px 4px;
+  }
+  .neutros-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--warn); letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+  /* FULL WIDTH COL (when only one side has data) */
+  .full-col { grid-column: 1 / -1; }
+
+  /* ONLY SOLO MESSAGE */
+  .solo-msg {
+    padding: 18px 20px;
+    font-size: 12.5px; color: var(--muted); font-style: italic; text-align: center;
+  }
+
+  /* MINI LEGEND */
+  .legend { display: flex; gap: 16px; padding: 10px 20px 0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .note { font-size: 11.5px; color: var(--muted); font-style: italic; padding: 8px 20px 12px; }
+
+  footer { text-align: center; padding: 20px; color: #94A3B8; font-size: 11.5px; border-top: 1px solid var(--border); margin-top: 24px; }
+  
+  @media (max-width: 700px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .col-det { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔍 Casos Comparativos por CDU — Promotores vs Detractores</h1>
+  <p>HSP_Credits_MP &nbsp;·&nbsp; 2026-06 &nbsp;·&nbsp; Cada bloque muestra qué dijo quien tuvo buena experiencia vs quien no, para el mismo tipo de caso</p>
+</header>
+
+<main>
+
+<p style="font-size:13px;color:var(--muted);margin-bottom:4px;margin-top:8px">
+  💡 <strong>Cómo leer este informe:</strong> Para cada CDU se muestran lado a lado los comentarios de detractores (🔴) y promotores (🟢), con los neutros (🟡) debajo. El insight resume qué diferencia explica la brecha de experiencia.
+</p>
+
+<!-- ============================================================ -->
+<!--                     CORTE A                                  -->
+<!-- ============================================================ -->
+<div class="corte-header corte-a">🔒 CORTE A — Problemas de Seguridad &nbsp;|&nbsp; n=44</div>
+
+<!-- ---- CDU 1: Desconocimiento de transacciones ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Desconocimiento de transacciones</span>
+    <span class="pill pill-n">n=12</span>
+    <span class="pill pill-det">3 Det</span>
+    <span class="pill pill-neu">2 Neu</span>
+    <span class="pill pill-pro">7 Pro</span>
+  </div>
+  <div class="insight">
+    ⚡ <strong>Brecha clave:</strong> Los detractores esperan recuperar el dinero y no reciben una respuesta de resolución — solo proceso. Los promotores valoran la rapidez y la actitud del agente. La diferencia no está en la solución (a veces es la misma), sino en <strong>si el cliente sintió que avanzó</strong>. El neutro que dejó comentario positivo igualmente quedó en suspenso ("la atención fue inmediata pero…").
+  </div>
+  <div class="compare-grid">
+    <div class="col-det">
+      <div class="col-header det">🔴 Detractores (3)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463488423</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box det-c">"No resuelven nada, o por lo menos hasta ahorita no me han resuelto, necesito el dinero que me robaron, es para gastos de mi bebé y no he tenido respuesta."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463260318</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box det-c"><span class="no-comment">Sin comentario — NPS = –1</span></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463226520</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box det-c"><span class="no-comment">Sin comentario — NPS = –1</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header pro">🟢 Promotores (7)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463486597</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box pro-c">"Muchas gracias por las sugerencias y la rapidez."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463351322</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box pro-c">"Muy atentos y con mucha predisposición."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463335862</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box pro-c">"Es muy buena la atención que dan, la facilidad con que te ayudan a resolver las dudas y sobre todo la amabilidad. Definitivamente los recomiendo al 100%."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463394688</span><span class="case-office">ECO_TOWER · MLM</span></div>
+        <div class="case-sol">ATO - Desconoce transacción - Bajo riesgo de ATO</div>
+        <div class="comment-box pro-c">"Solo tengo pendiente la respuesta de mi seguro." <em style="font-size:11px;color:var(--muted)">(promotor a pesar de no tener resolución aún)</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="neutros-row">
+    <div class="neutros-title">🟡 Neutros (2)</div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:0">
+      <div class="case-meta"><span class="case-id">463408009</span><span class="case-office">KTA · MLA</span><em class="case-sol" style="margin:0"> · ATO - Usuario reconoció la transacción</em></div>
+      <div class="comment-box neu-c">"Muy bueno, me respondió todas las dudas. Muchas gracias." <em style="font-size:11px">(neutro posiblemente por resultado del caso, no por atención)</em></div>
+    </div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:6px">
+      <div class="case-meta"><span class="case-id">463372468</span><span class="case-office">ECO_TOWER · MLM</span><em class="case-sol" style="margin:0"> · ATO - Bajo riesgo de ATO</em></div>
+      <div class="comment-box neu-c">"La atención fue inmediata, eso es bueno porque uno se siente tomado en cuenta." <em style="font-size:11px">(valora la inmediatez pero no menciona resolución)</em></div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> Comunicar de forma proactiva los pasos siguientes y plazos esperados de resolución. El detractor 463394688 fue promotor aun sin resolución — la diferencia parece ser que recibió información clara sobre qué esperar (seguro pendiente). Replicar ese manejo de expectativas.</p>
+</div>
+
+<!-- ---- CDU 2: Fraude Pix inter / transfer out ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Fraude Pix inter / transfer out</span>
+    <span class="pill pill-n">n=10</span>
+    <span class="pill pill-det">2 Det</span>
+    <span class="pill pill-neu">1 Neu</span>
+    <span class="pill pill-pro">7 Pro</span>
+  </div>
+  <div class="insight">
+    ⚡ <strong>Brecha clave:</strong> Los 2 detractores están en la solución "Consulta por status" — sin avance real. Los promotores en la misma solución también quedaron sin recuperar el dinero (463488342 dice "sin palabras lo que hicieron") pero percibieron una gestión activa. Los promotores de "Apertura de denuncia" valoran la acción concreta (se creó algo). <strong>El simple acto de formalizar una denuncia genera mejor percepción que quedarse en consulta de status.</strong>
+  </div>
+  <div class="compare-grid">
+    <div class="col-det">
+      <div class="col-header det">🔴 Detractores (2)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">462865131</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia inter — Consulta por status</div>
+        <div class="comment-box det-c">"Según ustedes no pudieron recuperar el dinero de la estafa y según el estafador no podía retirar los fondos por la denuncia... me quedo con la duda de dónde fue a parar."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463289295</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia inter — Consulta por status</div>
+        <div class="comment-box det-c">"No comprenden lo que leen. No resuelven."</div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header pro">🟢 Promotores (7)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463488342</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia inter — Consulta por status</div>
+        <div class="comment-box pro-c">"Sin palabras lo que hicieron... muy contento, muchas gracias 🎉" <em style="font-size:11px">(misma solución que los detractores, pero experiencia opuesta)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463350408</span><span class="case-office">KTA · MLC</span></div>
+        <div class="case-sol">Fraude transferencia inter — Apertura de denuncia</div>
+        <div class="comment-box pro-c">"Atención rápida y amable."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463307786</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia inter — Apertura de denuncia</div>
+        <div class="comment-box pro-c">"Me atendieron bien, espero que se pueda solucionar el problema. Creo que deberían tener un equipo dedicado a bloquear transferencias a sitios estafadores como 1Win."</div>
+      </div>
+    </div>
+  </div>
+  <div class="neutros-row">
+    <div class="neutros-title">🟡 Neutros (1)</div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:0">
+      <div class="case-meta"><span class="case-id">463473809</span><span class="case-office">KTA · MLC</span><em class="case-sol" style="margin:0"> · Fraude transferencia inter — Apertura de denuncia</em></div>
+      <div class="comment-box neu-c"><span class="no-comment">Sin comentario.</span></div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> Cuando no es posible avanzar en "consulta por status", ofrecer siempre la apertura de denuncia como acción tangible. La diferencia entre detractor y promotor en la misma solución sugiere variabilidad en la calidad de gestión del agente — revisar qué hacen diferente los agentes de los casos promotores.</p>
+</div>
+
+<!-- ---- CDU 3: Fraude Pix intra / P2P ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Fraude Pix intra / P2P</span>
+    <span class="pill pill-n">n=7</span>
+    <span class="pill pill-det">1 Det</span>
+    <span class="pill pill-neu">1 Neu</span>
+    <span class="pill pill-pro">5 Pro</span>
+  </div>
+  <div class="insight">
+    ⚡ <strong>Brecha clave:</strong> El único detractor estuvo en "Consulta por status" (sin acción). Los 5 promotores fueron atendidos con "Creamos la denuncia" (acción concreta). El neutro también fue por denuncia pero señala una <strong>brecha en el formulario</strong>: no permite denunciar sin número de teléfono del estafador. Dato procesable para producto.
+  </div>
+  <div class="compare-grid">
+    <div class="col-det">
+      <div class="col-header det">🔴 Detractores (1)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463350436</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia intra — Consulta por status</div>
+        <div class="comment-box det-c">"Me estafaron y no se pueden hacer responsables y no saben cómo ayudar."</div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header pro">🟢 Promotores (5)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463231462</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia intra — Creamos la denuncia</div>
+        <div class="comment-box pro-c">"Excelente atención, muy clara y con un trato muy cordial."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463489120</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia intra — Creamos la denuncia</div>
+        <div class="comment-box pro-c">"Todo bien."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463365336</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Fraude transferencia intra — Creamos la denuncia</div>
+        <div class="comment-box pro-c">"Espero solucionar el tema de mi estafa de la transferencia no autorizada." <em style="font-size:11px">(sin resolución aún pero confianza)</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="neutros-row">
+    <div class="neutros-title">🟡 Neutros (1)</div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:0">
+      <div class="case-meta"><span class="case-id">463391484</span><span class="case-office">KTA · MLA</span><em class="case-sol" style="margin:0"> · Fraude transferencia intra — Creamos la denuncia</em></div>
+      <div class="comment-box neu-c">"Mi experiencia fue muy buena en la atención. Solo recomiendo que en el cuestionario de estafa <strong>agreguen la opción de poner la denuncia aunque no tengan el número del que vino la estafa</strong>, ya que puede ser una estafa por llamada a número fijo."</div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> (1) Mover los casos en "consulta por status" hacia "creación de denuncia" siempre que sea posible. (2) Bug de producto identificado por el neutro: el formulario de denuncia requiere número del estafador — mejora para Product: hacer ese campo opcional.</p>
+</div>
+
+<!-- ---- CDU 4: Me intentaron estafar ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Me intentaron estafar</span>
+    <span class="pill pill-n">n=7</span>
+    <span class="pill pill-det">1 Det</span>
+    <span class="pill pill-neu">0 Neu</span>
+    <span class="pill pill-pro">6 Pro</span>
+  </div>
+  <div class="insight">
+    ⚡ <strong>Brecha clave:</strong> El único detractor no dejó comentario — es imposible saber qué falló. Los 6 promotores coinciden en rapidez, claridad y amabilidad. Este CDU performa bien en general (85.7% promotores). El detractor puede ser un caso aislado o de canal distinto.
+  </div>
+  <div class="compare-grid">
+    <div class="col-det">
+      <div class="col-header det">🔴 Detractores (1)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463469171</span><span class="case-office">KTA · MLC</span></div>
+        <div class="case-sol">Intento de estafa — Explicamos cómo denunciar</div>
+        <div class="comment-box det-c"><span class="no-comment">Sin comentario — único caso con site MLC entre los detractores.</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header pro">🟢 Promotores (6)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463476747</span><span class="case-office">ONELINK_BOGOTA · MLA</span></div>
+        <div class="comment-box pro-c">"Buena experiencia, muy amable."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463313780</span><span class="case-office">ECO_TOWER · MLC</span></div>
+        <div class="comment-box pro-c">"Respuesta clara y rápida."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463436107</span><span class="case-office">KTA · MLA</span></div>
+        <div class="comment-box pro-c">"Muy buena atención."</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> CDU con buen desempeño. Prioridad baja — revisar el caso 463469171 individualmente para identificar si hubo un problema de canal o de agente específico.</p>
+</div>
+
+<!-- ---- CDU 5: Consulta sobre alertas de estafa ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Consulta sobre los alertas de estafa</span>
+    <span class="pill pill-n">n=1</span>
+    <span class="pill pill-det">1 Det</span>
+    <span style="font-size:11px;color:var(--muted);font-style:italic">⚠️ Muestra única — no representativo</span>
+  </div>
+  <div class="compare-grid">
+    <div class="col-det full-col">
+      <div class="col-header det">🔴 Único caso (Detractor)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463300883</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">Consultas informativas — Por qué están mostrando un alerta de estafa</div>
+        <div class="comment-box det-c">"Muy mala la atención, no soluciona nada, es lo mismo que el asistente virtual."</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">📌 Sin casos promotores para comparar. El comentario sugiere que la respuesta informativa del agente no superó la del bot — revisar el script de esta solución.</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!--                     CORTE B                                  -->
+<!-- ============================================================ -->
+<div class="corte-header corte-b">💳 CORTE B — Funcionalidades de Tarjeta de Crédito &nbsp;|&nbsp; n=80</div>
+
+<!-- ---- CDU B1: Consultas por Resumen ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Consultas por Resumen</span>
+    <span class="pill pill-n">n=55</span>
+    <span class="pill pill-det">9 Det</span>
+    <span class="pill pill-neu">8 Neu</span>
+    <span class="pill pill-pro">38 Pro</span>
+  </div>
+  <div class="insight">
+    ⚡ <strong>Brecha clave:</strong> Los detractores se concentran en <strong>3 problemas distintos</strong>: (1) cobros percibidos como injustos o incorrectos, (2) fallas de canal de voz (señal, múltiples transferencias), y (3) casos donde el NPS es –1 pero el comentario es positivo (sesgo de respuesta o frustración con el producto, no el agente). Los promotores destacan claridad, rapidez y empatía. <strong>El agente es bien evaluado; el problema es el producto/cobros y el canal de voz.</strong>
+  </div>
+  <div class="compare-grid">
+    <div class="col-det">
+      <div class="col-header det">🔴 Detractores (9) — selección representativa</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463010404</span><span class="case-office">ONELINK_BOGOTA · MLA</span></div>
+        <div class="case-sol">Consultas informativas — Pago con débito automático</div>
+        <div class="comment-box det-c">"Me tuvieron una hora en llamada pasándome de sector en sector sin saber darme respuesta. A cada persona que me atendía (fueron como 7) tuve que explicarle mi inconveniente y se cortó la llamada."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463418240</span><span class="case-office">ECO_TOWER · MLM</span></div>
+        <div class="case-sol">TC — Explicación de factura / intereses y tarifas</div>
+        <div class="comment-box det-c">"Tuve recargos por retraso en pago; la forma en la que se realizan los cobros son poco transparentes."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463386080</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="case-sol">TC — Explicación de factura / intereses y tarifas</div>
+        <div class="comment-box det-c">"Me están haciendo un cobro de una tarjeta de crédito que está dada de baja."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463381120</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="case-sol">TC — Consulta por intereses cobrados</div>
+        <div class="comment-box det-c">"La penalización por no pagar no es proporcional al pago; me atrasé en un pago pequeño y me salió muy caro."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463377373</span><span class="case-office">ECO_TOWER · MLM</span></div>
+        <div class="case-sol">TC — Pagó estado de cuenta (en procesamiento)</div>
+        <div class="comment-box det-c">"Mala señal en llamada, se cortaba todo y no fue claro."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463305833</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">TC — Pagó estado de cuenta (en procesamiento)</div>
+        <div class="comment-box det-c">"Ha sido buena experiencia." <em style="font-size:11px;color:var(--muted)">⚠️ Comentario positivo con NPS –1 — posible frustración con el producto, no el agente.</em></div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header pro">🟢 Promotores (38) — selección representativa</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463457647</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">TC — Explicación de factura / intereses y tarifas</div>
+        <div class="comment-box pro-c">"El personal es amable y te responde con claridad." <em style="font-size:11px">(misma solución que 3 detractores)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463486527</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">TC — Explicación de factura / intereses y tarifas</div>
+        <div class="comment-box pro-c">"Atención buena y clara."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463485694</span><span class="case-office">ONELINK_BOGOTA · MLA</span></div>
+        <div class="case-sol">TC — Problemas funcionales</div>
+        <div class="comment-box pro-c">"Me dieron una solución rápida."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463300383</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">TC — Problemas funcionales</div>
+        <div class="comment-box pro-c">"Pude filtrar mi reclamo por el asistente IA y luego recibí respuesta rápida por WhatsApp dando solución a mi reclamo." <em style="font-size:11px">(flujo IA → agente bien integrado)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463452745</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="case-sol">TC — Cómo realizar pago antes del vencimiento</div>
+        <div class="comment-box pro-c">"El joven que me atendió fue muy amable y paciente porque de repente yo no tenía señal y también contestó mis preguntas y me dio solución."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463382768</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="case-sol">TC — Consulta por intereses cobrados</div>
+        <div class="comment-box pro-c">"Fue un poco complicado contactarme con un ejecutivo, pero la atención y la información fue buena y clara." <em style="font-size:11px">(promotor a pesar de dificultad de acceso)</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="neutros-row">
+    <div class="neutros-title">🟡 Neutros con comentario útil (de 8)</div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:0">
+      <div class="case-meta"><span class="case-id">463450985</span><span class="case-office">KTA · MLM</span><em class="case-sol" style="margin:0"> · TC - Saldo a favor</em></div>
+      <div class="comment-box neu-c">"La tarjeta de crédito es un problema para liquidarla; si líquidas antes de tiempo, el límite no coincide con lo que después quiere cobrar."</div>
+    </div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:6px">
+      <div class="case-meta"><span class="case-id">463447065</span><span class="case-office">KTA · MLA</span><em class="case-sol" style="margin:0"> · TC - Problemas funcionales</em></div>
+      <div class="comment-box neu-c">"Muchas vueltas para hacer un reclamo. Pero me atendieron muy bien." <em style="font-size:11px">(buena atención, mal proceso)</em></div>
+    </div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:6px">
+      <div class="case-meta"><span class="case-id">463320627</span><span class="case-office">ECO_TOWER · MLM</span><em class="case-sol" style="margin:0"> · TC - Factura bloqueada post-pago</em></div>
+      <div class="comment-box neu-c">"Me dijeron que ya no podía usar la tarjeta cuando ya pagué; me gustaría volver a usarla ya que ahora sí estoy a tiempo." <em style="font-size:11px">(confusión sobre límite post-pago)</em></div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> (1) El canal de voz con múltiples transferencias es el mayor destructor de experiencia — priorizar resolución en primer contacto o permitir retomar la llamada. (2) Los cobros de intereses/penalizaciones generan detracción hacia el producto; el agente debe contar con recursos para explicar la proporcionalidad y escalar disputas reales. (3) Estandarizar la explicación del funcionamiento del límite post-liquidación (confusión frecuente en neutros).</p>
+</div>
+
+<!-- ---- CDU B2: Funcionales ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Funcionales</span>
+    <span class="pill pill-n">n=16</span>
+    <span class="pill pill-det">3 Det</span>
+    <span class="pill pill-neu">1 Neu</span>
+    <span class="pill pill-pro">12 Pro</span>
+  </div>
+  <div class="insight">
+    ⚡ <strong>Brecha clave:</strong> Los 3 detractores señalan dos problemas distintos: (1) la app falla en el proceso de cancelación de tarjeta — el agente fue bien evaluado pero la herramienta digital no funciona; (2) las condiciones de promociones son opacas. Los promotores en las mismas soluciones (cancelar TC, promociones) recibieron buena atención y el proceso les funcionó. <strong>La variabilidad es tecnológica + comunicacional, no de calidad de agente.</strong>
+  </div>
+  <div class="compare-grid">
+    <div class="col-det">
+      <div class="col-header det">🔴 Detractores (3)</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463377935</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="case-sol">TC — Cómo cancelar mi tarjeta</div>
+        <div class="comment-box det-c">"La persona muy amable, pero su aplicación muy mala." <em style="font-size:11px">(agente ✅ / app ❌)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463440816</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="case-sol">TC — Cómo cancelar mi tarjeta</div>
+        <div class="comment-box det-c">"Sin comentarios; no recomendable."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463360906</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">TC — Promociones — No cumple requisitos</div>
+        <div class="comment-box det-c">"La app es práctica pero no son claras las promociones en cuanto a los pasos esenciales para que se reintegren los montos."</div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header pro">🟢 Promotores (12) — selección</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463432661</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">TC — Cómo cancelar mi tarjeta</div>
+        <div class="comment-box pro-c">"Muy eficiente." <em style="font-size:11px">(misma solución, experiencia opuesta — ¿app funcional en ese momento o canal diferente?)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463489960</span><span class="case-office">KTA · MLM</span></div>
+        <div class="case-sol">TC — Cómo cancelar mi tarjeta</div>
+        <div class="comment-box pro-c"><span class="no-comment">Sin comentario (promotor).</span></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463467740</span><span class="case-office">ONELINK_BOGOTA · MLA</span></div>
+        <div class="case-sol">TC — Beneficios compras a meses sin interés</div>
+        <div class="comment-box pro-c">"Me pudieron ayudar muy bien y, muy claros en mi consulta. Muchas gracias."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463344525</span><span class="case-office">KTA · MLA</span></div>
+        <div class="case-sol">TC — Promociones — No cumple requisitos</div>
+        <div class="comment-box pro-c">"Me resolvieron mis dudas sobre la tarjeta física de crédito."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463415176</span><span class="case-office">ECO_TOWER · MLA</span></div>
+        <div class="case-sol">TC — Promociones — No cumple requisitos</div>
+        <div class="comment-box pro-c">"No me gustó que me pidieran tantos datos cuando son ustedes los que comparten el beneficio." <em style="font-size:11px">(promotor con fricción en proceso — señal de mejora)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463304117</span><span class="case-office">ONELINK_BOGOTA · MLA</span></div>
+        <div class="case-sol">TC — Beneficios meses sin interés</div>
+        <div class="comment-box pro-c">"La última operadora diligente y cordial. Pero el problema desde hace meses sigue sin resolverse (impuestos mal cobrados en la tarjeta)." <em style="font-size:11px">(promotor en atención, problema de producto crónico)</em></div>
+      </div>
+    </div>
+  </div>
+  <div class="neutros-row">
+    <div class="neutros-title">🟡 Neutros (1)</div>
+    <div class="case-card" style="background:transparent;border:none;padding-top:0">
+      <div class="case-meta"><span class="case-id">463337368</span><span class="case-office">KTA · MLA</span><em class="case-sol" style="margin:0"> · TC - Tarjeta no habilitada para extracciones</em></div>
+      <div class="comment-box neu-c">"Costó, pero fue resuelta con Tatiana en la segunda vez... el primero fue desastroso." <em style="font-size:11px">(variabilidad entre agentes en el mismo CDU)</em></div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> (1) El proceso de cancelación de TC vía app falla de forma inconsistente — los detractores son de ONELINK_BOGOTA/MLM, los promotores de KTA. Puede ser un problema de versión de app por mercado. (2) Simplificar los pasos de las promociones y comunicar los requisitos antes de que el cliente inicie — reducir la fricción informacional. (3) El neutro 463337368 evidencia variabilidad de agentes: trabajar calibración de equipo.</p>
+</div>
+
+<!-- ---- CDU B3: Solicitud ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Solicitud</span>
+    <span class="pill pill-n">n=2</span>
+    <span class="pill pill-neu">2 Neu</span>
+    <span style="font-size:11px;color:var(--muted);font-style:italic">⚠️ Solo neutros, sin detractores ni promotores</span>
+  </div>
+  <div class="compare-grid">
+    <div style="grid-column:1/-1">
+      <div class="col-header neu-h">🟡 Ambos casos son Neutros — Reemisión de tarjeta digital</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463473529</span><span class="case-office">ONELINK_BOGOTA · MLM</span></div>
+        <div class="comment-box neu-c">"Las instrucciones son claras pero al momento de realizarlas no obtienes los resultados esperados y vuelves a efectuar la misma instrucción sin resultados favorables, hasta que pude contactar por Gmail."</div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463347683</span><span class="case-office">KTA · MLM</span></div>
+        <div class="comment-box neu-c">"Es bueno." <em style="font-size:11px">(neutro sin fricción aparente — probablemente la expectativa de resolución de reemisión no fue satisfecha al 100%)</em></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> El flujo de reemisión de tarjeta digital no funciona según las instrucciones del agente (el cliente lo ejecuta sin éxito). Brecha entre lo que el agente comunica y lo que la app ejecuta — requiere revisión técnica del flujo de reemisión.</p>
+</div>
+
+<!-- ---- CDU B4: Generales / Recepción ---- -->
+<div class="cdu-block">
+  <div class="cdu-title">
+    <span class="cdu-name">Generales &amp; Recepción</span>
+    <span class="pill pill-n">n=2</span>
+    <span class="pill pill-det">2 Det</span>
+    <span style="font-size:11px;color:var(--muted);font-style:italic">⚠️ Muestra pequeña (n=1 cada CDU)</span>
+  </div>
+  <div class="compare-grid">
+    <div class="col-det full-col">
+      <div class="col-header det">🔴 Detractores únicos — sin promotores para comparar</div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463262211</span><span class="case-office">ONELINK_BOGOTA · MLM</span><span class="case-office">CDU: Generales</span></div>
+        <div class="case-sol">Consulta derivada — Compartimos respuesta del equipo responsable</div>
+        <div class="comment-box det-c">"Pésima atención. Me están cobrando intereses por pago tardío cuando en ningún momento fue así. Me están robando." <em style="font-size:11px">(disputa de cobro legítima, requiere escalamiento real)</em></div>
+      </div>
+      <div class="case-card">
+        <div class="case-meta"><span class="case-id">463407184</span><span class="case-office">ONELINK_BOGOTA · MLM</span><span class="case-office">CDU: Recepción</span></div>
+        <div class="case-sol">TC — Tarjeta aparece entregada pero no la recibí</div>
+        <div class="comment-box det-c">"Todo excelente con atención a clientes, pero sus repartidores son un asco y demasiado incompetentes." <em style="font-size:11px">(problema operativo de logística, fuera del alcance del agente)</em></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">📌 <strong>Qué mejoraría la experiencia:</strong> "Generales" → la consulta derivada no resuelve la disputa de cobro. El cliente necesita una gestión de escalamiento real, no solo una respuesta informativa. "Recepción" → el problema es logístico (repartidor), fuera del control del agente CX — el agente fue bien evaluado. Requiere coordinación con el equipo de delivery.</p>
+</div>
+
+</main>
+<footer>Análisis generado con datos reales del CDU &nbsp;·&nbsp; HSP_Credits_MP &nbsp;·&nbsp; Junio 2026 &nbsp;·&nbsp; Sin inventar datos</footer>
+</body>
+</html>
